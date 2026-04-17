@@ -39,19 +39,19 @@ export default function FeedPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+    <div className="w-full max-w-2xl mx-auto py-4 md:py-8 px-2 md:px-0">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-foreground">
         Your Feed
       </h1>
       
       {posts.length === 0 ? (
-        <div className="glass-panel p-8 text-center rounded-2xl text-slate-400">
+        <div className="glass-panel p-8 text-center rounded-2xl text-slate-500">
           No posts yet. Be the first to share something!
         </div>
       ) : (

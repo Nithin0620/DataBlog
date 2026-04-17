@@ -24,7 +24,6 @@ export default function Login() {
       });
 
       if (res.ok) {
-        // Next 14+ sometimes requires a hard redirect or router.refresh to reset caches on client for server-cookies
         window.location.href = '/';
       } else {
         const data = await res.json();
@@ -38,36 +37,36 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-[70vh]">
-      <div className="glass-panel p-8 rounded-2xl w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">Welcome Back</h2>
-        {error && <div className="bg-red-500/20 text-red-400 p-3 rounded-xl mb-4 text-sm border border-red-500/50">{error}</div>}
+    <div className="flex justify-center flex-grow items-center px-4 py-12 md:h-[70vh]">
+      <div className="glass-panel p-6 md:p-8 rounded-2xl w-full max-w-md">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-foreground">Welcome Back</h2>
+        {error && <div className="bg-red-100 text-red-600 p-3 rounded-xl mb-4 text-sm border border-red-200">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">Email</label>
             <input 
               type="email" required 
-              className="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full bg-white/80 border border-slate-200 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               value={email} onChange={e => setEmail(e.target.value)} 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
+            <label className="block text-sm font-medium text-slate-600 mb-1">Password</label>
             <input 
               type="password" required 
-              className="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full bg-white/80 border border-slate-200 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               value={password} onChange={e => setPassword(e.target.value)} 
             />
           </div>
           <button 
             type="submit" disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:transform-none"
+            className="w-full mt-2 bg-primary hover:bg-[#b58c63] text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:transform-none"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
-        <p className="mt-6 text-center text-slate-400">
-          Don't have an account? <Link href="/signup" className="text-blue-400 hover:underline">Sign up</Link>
+        <p className="mt-6 text-center text-sm md:text-base text-slate-500">
+          Don't have an account? <Link href="/signup" className="text-primary hover:underline font-medium">Sign up</Link>
         </p>
       </div>
     </div>

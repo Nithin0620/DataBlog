@@ -30,30 +30,30 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between mx-4 mt-4 rounded-2xl">
-      <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+    <nav className="glass-panel sticky top-0 z-50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between mx-2 md:mx-4 mt-2 md:mt-4 rounded-2xl">
+      <Link href="/" className="text-xl md:text-2xl font-bold text-foreground hover:text-primary transition-colors">
         DataBlog
       </Link>
-      <div className="flex items-center space-x-6">
-        <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">
+      <div className="flex items-center space-x-4 md:space-x-6 text-sm md:text-base">
+        <Link href="/" className="text-slate-600 hover:text-primary transition-colors flex items-center gap-1 md:gap-2">
           <Home className="w-5 h-5" /> <span className="hidden sm:inline">Feed</span>
         </Link>
         {userId ? (
           <>
-            <Link href="/create" className="hover:text-primary transition-colors flex items-center gap-2">
+            <Link href="/create" className="text-slate-600 hover:text-primary transition-colors flex items-center gap-1 md:gap-2">
               <PenSquare className="w-5 h-5" /> <span className="hidden sm:inline">Post</span>
             </Link>
-            <Link href={`/profile/${userId}`} className="hover:text-primary transition-colors flex items-center gap-2">
+            <Link href={`/profile/${userId}`} className="text-slate-600 hover:text-primary transition-colors flex items-center gap-1 md:gap-2">
               <UserIcon className="w-5 h-5" /> <span className="hidden sm:inline">Profile</span>
             </Link>
-            <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-2">
+            <button onClick={handleLogout} className="text-red-500 hover:text-red-400 transition-colors flex items-center gap-1 md:gap-2">
               <LogOut className="w-5 h-5" /> <span className="hidden sm:inline">Logout</span>
             </button>
           </>
         ) : (
-          <div className="space-x-4">
-            <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
-            <Link href="/signup" className="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-full font-medium transition-colors">Sign Up</Link>
+          <div className="space-x-2 md:space-x-4">
+            <Link href="/login" className="text-slate-600 hover:text-primary transition-colors">Login</Link>
+            <Link href="/signup" className="bg-primary hover:bg-[#b58c63] text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full font-medium transition-colors">Sign Up</Link>
           </div>
         )}
       </div>
