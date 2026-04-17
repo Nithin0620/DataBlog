@@ -17,7 +17,7 @@ export default function Navbar() {
           const data = await res.json();
           setUserId(data.user?.id || null);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     checkAuth();
   }, []);
@@ -32,7 +32,7 @@ export default function Navbar() {
   return (
     <nav className="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between mx-4 mt-4 rounded-2xl">
       <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-        Sociality
+        DataBlog
       </Link>
       <div className="flex items-center space-x-6">
         <Link href="/" className="hover:text-primary transition-colors flex items-center gap-2">

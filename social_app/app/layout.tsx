@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: "Sociality | Connect & Share",
+  title: "DataBlog | Connect & Share",
   description: "A premium social media application built with Next.js",
 };
 
