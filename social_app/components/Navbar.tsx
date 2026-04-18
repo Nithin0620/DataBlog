@@ -30,7 +30,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="glass-panel sticky top-0 z-50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between mx-2 md:mx-4 mt-2 md:mt-4 rounded-2xl">
+    <nav className="glass-panel sticky top-0 z-50 backdrop-blur-md px-4 md:px-6 py-3 md:py-4 flex items-center justify-between mx-2 md:mx-4 mt-2 md:mt-4 rounded-2xl">
       <Link href="/" className="text-xl md:text-2xl font-bold text-foreground hover:text-primary transition-colors">
         DataBlog
       </Link>
