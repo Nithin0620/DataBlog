@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import db from '@/lib/db';
+import crypto from 'crypto';
 import { getAuthUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -15,27 +16,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing postId' }, { status: 400 });
     }
 
-    const existingLike = await prisma.like.findUnique({
-      where: {
-        userId_postId: {
-          userId: user.id,
-          postId,
-        }
-      }
-    });
+    const [existingLikes] = await db.execute<any[]>(
+      'SELECT id FROM `Like` WHERE userId = ? AND postId = ? LIMIT 1',
+      [user.id, postId]
+    );
 
-    if (existingLike) {
-      await prisma.like.delete({
-        where: { id: existingLike.id }
-      });
+    if (existingLikes.length > 0) {
+      await db.execute('DELETE FROM `Like` WHERE id = ?', [existingLikes[0].id]);
       return NextResponse.json({ liked: false });
     } else {
-      await prisma.like.create({
-        data: {
-          userId: user.id,
-          postId,
-        }
-      });
+      const id = crypto.randomUUID();
+      await db.execute(
+        'INSERT INTO `Like` (id, userId, postId) VALUES (?, ?, ?)',
+        [id, user.id, postId]
+      );
       return NextResponse.json({ liked: true });
     }
   } catch (error) {

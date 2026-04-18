@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import prisma from './db';
+import db from './db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-social-app';
 
@@ -29,10 +29,12 @@ export async function getAuthUser() {
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-    select: { id: true, username: true, email: true },
-  });
+  const [rows] = await db.execute<any[]>(
+    'SELECT id, username, email FROM User WHERE id = ?',
+    [payload.userId]
+  );
+  
+  const user = rows[0] || null;
 
   return user;
 }

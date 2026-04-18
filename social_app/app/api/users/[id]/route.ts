@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import db from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 // Add type for valid params
@@ -11,34 +11,37 @@ export async function GET(req: Request, props: { params: Promise<RouteParams> })
     const { id } = params;
     const authUser = await getAuthUser();
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        createdAt: true,
-        _count: {
-          select: { followers: true, following: true, posts: true }
-        }
-      }
-    });
+    const [userRows] = await db.execute<any[]>(
+      'SELECT id, username, email, createdAt FROM User WHERE id = ? LIMIT 1',
+      [id]
+    );
 
-    if (!user) {
+    if (userRows.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    const userRow = userRows[0];
+
+    const [followersResult] = await db.execute<any[]>('SELECT COUNT(*) as count FROM Follow WHERE followingId = ?', [id]);
+    const [followingResult] = await db.execute<any[]>('SELECT COUNT(*) as count FROM Follow WHERE followerId = ?', [id]);
+    const [postsResult] = await db.execute<any[]>('SELECT COUNT(*) as count FROM Post WHERE userId = ?', [id]);
+
+    const user = {
+      ...userRow,
+      _count: {
+        followers: followersResult[0].count,
+        following: followingResult[0].count,
+        posts: postsResult[0].count,
+      }
+    };
+
     let isFollowing = false;
     if (authUser && authUser.id !== id) {
-      const follow = await prisma.follow.findUnique({
-        where: {
-          followerId_followingId: {
-            followerId: authUser.id,
-            followingId: id,
-          }
-        }
-      });
-      isFollowing = !!follow;
+      const [followRows] = await db.execute<any[]>(
+        'SELECT 1 FROM Follow WHERE followerId = ? AND followingId = ? LIMIT 1',
+        [authUser.id, id]
+      );
+      isFollowing = followRows.length > 0;
     }
 
     return NextResponse.json({ ...user, isFollowing });

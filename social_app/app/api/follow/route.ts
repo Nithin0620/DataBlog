@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import db from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -19,32 +19,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Cannot follow yourself' }, { status: 400 });
     }
 
-    const existingFollow = await prisma.follow.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: user.id,
-          followingId: targetUserId,
-        }
-      }
-    });
+    const [existingFollows] = await db.execute<any[]>(
+      'SELECT 1 FROM Follow WHERE followerId = ? AND followingId = ? LIMIT 1',
+      [user.id, targetUserId]
+    );
 
-    if (existingFollow) {
-      await prisma.follow.delete({
-        where: {
-          followerId_followingId: {
-            followerId: user.id,
-            followingId: targetUserId,
-          }
-        }
-      });
+    if (existingFollows.length > 0) {
+      await db.execute(
+        'DELETE FROM Follow WHERE followerId = ? AND followingId = ?',
+        [user.id, targetUserId]
+      );
       return NextResponse.json({ followed: false });
     } else {
-      await prisma.follow.create({
-        data: {
-          followerId: user.id,
-          followingId: targetUserId,
-        }
-      });
+      await db.execute(
+        'INSERT INTO Follow (followerId, followingId) VALUES (?, ?)',
+        [user.id, targetUserId]
+      );
       return NextResponse.json({ followed: true });
     }
   } catch (error) {

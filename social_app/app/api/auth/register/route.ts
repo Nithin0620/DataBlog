@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import prisma from '@/lib/db';
+import db from '@/lib/db';
+import crypto from 'crypto';
 import { signToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
@@ -12,23 +13,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findFirst({
-      where: { OR: [{ email: email }, { username: username }] }
-    });
+    const [existingUsers] = await db.execute<any[]>(
+      'SELECT id FROM User WHERE email = ? OR username = ? LIMIT 1',
+      [email, username]
+    );
 
-    if (existingUser) {
+    if (existingUsers.length > 0) {
       return NextResponse.json({ error: 'Username or email already exists' }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const id = crypto.randomUUID();
 
-    const user = await prisma.user.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-      }
-    });
+    await db.execute(
+      'INSERT INTO User (id, username, email, password, createdAt) VALUES (?, ?, ?, ?, NOW())',
+      [id, username, email, hashedPassword]
+    );
+
+    const user = { id, username, email };
 
     const token = await signToken(user.id);
 

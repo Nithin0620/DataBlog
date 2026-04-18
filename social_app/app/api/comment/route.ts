@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import db from '@/lib/db';
+import crypto from 'crypto';
 import { getAuthUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -15,16 +16,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing postId or text' }, { status: 400 });
     }
 
-    const comment = await prisma.comment.create({
-      data: {
-        text,
-        userId: user.id,
-        postId,
-      },
-      include: {
-        user: { select: { id: true, username: true } },
+    const id = crypto.randomUUID();
+    const createdAt = new Date();
+
+    await db.execute(
+      'INSERT INTO Comment (id, text, userId, postId, createdAt) VALUES (?, ?, ?, ?, ?)',
+      [id, text, user.id, postId, createdAt]
+    );
+
+    const comment = {
+      id,
+      text,
+      userId: user.id,
+      postId,
+      createdAt,
+      user: {
+        id: user.id,
+        username: user.username,
       }
-    });
+    };
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
