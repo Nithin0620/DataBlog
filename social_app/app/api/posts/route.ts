@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import crypto from 'crypto';
 import { getAuthUser } from '@/lib/auth';
 
@@ -15,6 +15,8 @@ export async function GET(req: Request) {
       queryParams.push(userId);
     }
     postsQuery += ' ORDER BY p.createdAt DESC';
+
+    const db = await dbReady;
 
     const [postRows] = await db.execute<any[]>(postsQuery, queryParams);
 
@@ -78,6 +80,8 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const db = await dbReady;
 
     const { content, imageUrl } = await req.json();
 

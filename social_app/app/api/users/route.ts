@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 export async function GET(req: Request) {
@@ -16,6 +16,8 @@ export async function GET(req: Request) {
     }
     
     query += 'ORDER BY createdAt DESC LIMIT 20';
+
+    const db = await dbReady;
 
     const [users] = await db.execute<any[]>(query, params);
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import crypto from 'crypto';
 import { getAuthUser } from '@/lib/auth';
 
@@ -15,6 +15,8 @@ export async function POST(req: Request) {
     if (!postId) {
       return NextResponse.json({ error: 'Missing postId' }, { status: 400 });
     }
+
+    const db = await dbReady;
 
     const [existingLikes] = await db.execute<any[]>(
       'SELECT id FROM `Like` WHERE userId = ? AND postId = ? LIMIT 1',

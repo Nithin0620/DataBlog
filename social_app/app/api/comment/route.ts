@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import crypto from 'crypto';
 import { getAuthUser } from '@/lib/auth';
 
@@ -15,6 +15,8 @@ export async function POST(req: Request) {
     if (!postId || !text) {
       return NextResponse.json({ error: 'Missing postId or text' }, { status: 400 });
     }
+
+    const db = await dbReady;
 
     const id = crypto.randomUUID();
     const createdAt = new Date();

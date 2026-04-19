@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 // Add type for valid params
@@ -10,6 +10,8 @@ export async function GET(req: Request, props: { params: Promise<RouteParams> })
     const params = await props.params;
     const { id } = params;
     const authUser = await getAuthUser();
+
+    const db = await dbReady;
 
     const [userRows] = await db.execute<any[]>(
       'SELECT id, username, email, createdAt FROM User WHERE id = ? LIMIT 1',

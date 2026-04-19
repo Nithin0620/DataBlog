@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import crypto from 'crypto';
 import { signToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
@@ -12,6 +12,8 @@ export async function POST(req: Request) {
     if (!username || !email || !password) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+
+    const db = await dbReady;
 
     const [existingUsers] = await db.execute<any[]>(
       'SELECT id FROM User WHERE email = ? OR username = ? LIMIT 1',

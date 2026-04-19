@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -18,6 +18,8 @@ export async function POST(req: Request) {
     if (targetUserId === user.id) {
       return NextResponse.json({ error: 'Cannot follow yourself' }, { status: 400 });
     }
+
+    const db = await dbReady;
 
     const [existingFollows] = await db.execute<any[]>(
       'SELECT 1 FROM Follow WHERE followerId = ? AND followingId = ? LIMIT 1',

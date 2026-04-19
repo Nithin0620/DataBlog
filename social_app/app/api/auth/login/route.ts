@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import db from '@/lib/db';
+import dbReady from '@/lib/db';
 import { signToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
@@ -11,6 +11,8 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json({ error: 'Missing email or password' }, { status: 400 });
     }
+
+    const db = await dbReady;
 
     const [rows] = await db.execute<any[]>(
       'SELECT * FROM User WHERE email = ? LIMIT 1',
