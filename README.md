@@ -4,7 +4,7 @@ A full-stack social media web application built as a DBMS project, demonstrating
 
 ---
 
-## What's inside
+### What's inside
 
 ```
 DataBlog/
