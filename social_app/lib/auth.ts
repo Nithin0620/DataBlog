@@ -29,11 +29,11 @@ export async function getAuthUser() {
     return null;
   }
 
-  const [rows] = await db.execute<any[]>(
+  const [rows] = await (await db).execute<any[]>(
     'SELECT id, username, email FROM User WHERE id = ?',
     [payload.userId]
   );
-  
+
   const user = rows[0] || null;
 
   return user;
